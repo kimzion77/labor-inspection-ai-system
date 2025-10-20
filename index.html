@@ -3,635 +3,906 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>종합 산업안전·근로감독 시스템</title>
+    <title>종합 산업안전·근로감독 시스템 V3</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/recharts@2.5.0/dist/Recharts.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
-            min-height: 100vh;
-            padding: 1rem;
-        }
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-        }
-        .card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1.5rem;
-            border: 1px solid #BFDBFE;
-        }
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        .header-icon {
-            background: #BFDBFE;
-            padding: 0.5rem;
-            border-radius: 0.75rem;
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        h1 {
-            font-size: 1.875rem;
-            font-weight: bold;
-            color: #475569;
-        }
-        .search-container {
-            display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-        .search-wrapper {
-            position: relative;
-            flex: 1;
-        }
-        input, select {
-            width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.5rem;
-            background: #F8FAFC;
-            border: 1px solid #CBD5E1;
-            border-radius: 0.75rem;
-            font-size: 1rem;
-        }
-        select {
-            padding-left: 1rem;
-            min-width: 200px;
-        }
-        .search-icon {
-            position: absolute;
-            left: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 20px;
-            height: 20px;
-            color: #94A3B8;
-        }
-        button {
-            padding: 0.75rem 1rem;
-            border: none;
-            border-radius: 0.75rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 1rem;
-        }
-        .btn-primary {
-            background: #CBD5E1;
-            color: #475569;
-            width: 100%;
-        }
-        .btn-primary:hover {
-            background: #94A3B8;
-        }
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .btn-action {
-            background: #CBD5E1;
-            color: #475569;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .btn-action:hover {
-            background: #94A3B8;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 4rem 1rem;
-            background: #F1F5F9;
-            border-radius: 0.75rem;
-        }
-        .empty-icon {
-            width: 80px;
-            height: 80px;
-            background: #CBD5E1;
-            border-radius: 50%;
-            margin: 0 auto 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .business-card {
-            background: rgba(255, 255, 255, 0.8);
-            padding: 1rem;
-            border-radius: 0.75rem;
-            border: 1px solid #CBD5E1;
-            margin-bottom: 1rem;
-        }
-        .business-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        .business-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #1E293B;
-        }
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            margin-left: 0.5rem;
-        }
-        .badge-industry {
-            background: #CBD5E1;
-            color: #475569;
-        }
-        .badge-employees {
-            background: #94A3B8;
-            color: #475569;
-        }
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-        .info-item {
-            background: #F1F5F9;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-        }
-        .info-label {
-            font-size: 0.875rem;
-            color: #64748B;
-            font-weight: 500;
-        }
-        .info-value {
-            color: #475569;
-            margin-top: 0.25rem;
-        }
-        .report-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        .report-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #1E293B;
-        }
-        .report-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-        .section {
-            background: #F1F5F9;
-            padding: 1rem;
-            border-radius: 0.75rem;
-            border: 1px solid #CBD5E1;
-            margin-bottom: 1rem;
-        }
-        .section-title {
-            font-weight: 600;
-            color: #475569;
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .supervision-item {
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.8);
-            border-left: 4px solid #64748B;
-            border-radius: 0.75rem;
-            margin-bottom: 0.75rem;
-        }
-        .supervision-item.priority-high {
-            border-left-color: #64748B;
-        }
-        .supervision-item.priority-mid {
-            border-left-color: #94A3B8;
-        }
-        .supervision-item.priority-low {
-            border-left-color: #CBD5E1;
-        }
-        .priority-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.875rem;
-            font-weight: bold;
-            margin-right: 0.5rem;
-        }
-        .priority-high {
-            background: #94A3B8;
-            color: #1E293B;
-        }
-        .priority-mid {
-            background: #CBD5E1;
-            color: #475569;
-        }
-        .priority-low {
-            background: #F1F5F9;
-            color: #64748B;
-        }
-        .category-badge {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            background: #CBD5E1;
-            color: #475569;
-            border-radius: 0.25rem;
-            font-size: 0.875rem;
-            margin-right: 0.5rem;
-        }
-        .item-title {
-            font-weight: 500;
-            color: #1E293B;
-            margin: 0.5rem 0;
-        }
-        .item-detail {
-            font-size: 0.875rem;
-            color: #64748B;
-            line-height: 1.5;
-        }
-        .hidden {
-            display: none;
-        }
         @media print {
-            .no-print {
-                display: none !important;
-            }
-            body {
-                background: white;
-            }
+            .no-print { display: none !important; }
+            body { background: white !important; }
+            .bg-gradient-to-br { background: white !important; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card no-print">
-            <div class="header">
-                <div class="header-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                    </svg>
-                </div>
-                <h1>종합 산업안전·근로감독 시스템</h1>
-            </div>
-            
-            <div class="search-container">
-                <div class="search-wrapper">
-                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"/>
-                        <path d="m21 21-4.35-4.35"/>
-                    </svg>
-                    <input type="text" id="searchInput" placeholder="사업장명, 등록번호, 사업주명으로 검색하세요...">
-                </div>
-                <select id="jurisdictionSelect">
-                    <option value="">전체 관할지청</option>
-                    <option value="안산지방고용노동청">안산지방고용노동청</option>
-                    <option value="서울남부지방고용노동청">서울남부지방고용노동청</option>
-                    <option value="부산지방고용노동청">부산지방고용노동청</option>
-                    <option value="서울동부지방고용노동청">서울동부지방고용노동청</option>
-                </select>
-            </div>
+    <div id="root"></div>
 
-            <div id="searchResults"></div>
-            <div id="emptyState" class="empty-state">
-                <div class="empty-icon">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                    </svg>
-                </div>
-                <h3 style="font-size: 1.5rem; font-weight: 600; color: #475569; margin-bottom: 0.75rem;">
-                    산업안전감독 전용 시스템
-                </h3>
-                <p style="color: #64748B; max-width: 500px; margin: 0 auto;">
-                    모든 업종의 사업장을 검색하여 산업재해 예방 중심의 감독착안사항을 자동 생성합니다.
-                </p>
-            </div>
-        </div>
+    <script type="text/babel">
+        const { useState } = React;
+        const { 
+            Search, FileText, Building2, Users, Calendar, MapPin, User, 
+            BarChart3, AlertTriangle, Shield, Target, Printer, FileDown, 
+            Scale, PiggyBank, TrendingUp
+        } = lucide;
+        
+        const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } = Recharts;
 
-        <div id="reportContainer" class="card hidden">
-            <div class="report-header no-print">
-                <div class="report-title" id="reportTitle"></div>
-                <div class="report-actions">
-                    <button class="btn-action" onclick="window.print()">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="6 9 6 2 18 2 18 9"/>
-                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
-                            <rect x="6" y="14" width="12" height="8"/>
-                        </svg>
-                        인쇄
-                    </button>
-                    <button class="btn-action" onclick="window.print()">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="7 10 12 15 17 10"/>
-                            <line x1="12" y1="15" x2="12" y2="3"/>
-                        </svg>
-                        PDF저장
-                    </button>
-                </div>
-            </div>
-            <div id="reportContent"></div>
-        </div>
-    </div>
+        const SupervisionSystem = () => {
+            const [searchTerm, setSearchTerm] = useState('');
+            const [selectedJurisdiction, setSelectedJurisdiction] = useState('');
+            const [selectedBusiness, setSelectedBusiness] = useState(null);
+            const [isGenerating, setIsGenerating] = useState(false);
+            const [report, setReport] = useState(null);
+            const [supervisionType, setSupervisionType] = useState('industrial');
+            const [showAllSites, setShowAllSites] = useState(false);
+            const [showAccidentDetails, setShowAccidentDetails] = useState(false);
+            const [showSafetyManager, setShowSafetyManager] = useState(false);
+            const [showSupervisionHistory, setShowSupervisionHistory] = useState(false);
+            const [showJudicialHistory, setShowJudicialHistory] = useState(false);
+            const [showFineHistory, setShowFineHistory] = useState(false);
+            const [showSubContractors, setShowSubContractors] = useState(false);
+            const [showSafetyManagerHistory, setShowSafetyManagerHistory] = useState(false);
 
-    <script>
-        const businesses = [
-            {
-                id: 1,
-                name: '(주)대한제조',
-                registrationNumber: '123-45-67890',
-                ownerName: '김대한',
-                ownerContact: '010-1234-5678',
-                contact: '02-1234-5678',
-                jurisdiction: '안산지방고용노동청',
-                industry: '플라스틱제품 제조업',
-                location: '경기도 안산시 단원구 공단로 123',
-                employees: 85,
-                industryCategory: 'manufacturing'
-            },
-            {
-                id: 2,
-                name: '삼성건설(주)',
-                registrationNumber: '234-56-78901',
-                ownerName: '이건설',
-                ownerContact: '010-2345-6789',
-                contact: '02-2345-6789',
-                jurisdiction: '서울남부지방고용노동청',
-                industry: '종합건설업',
-                location: '서울특별시 서초구 서초대로 74길 11',
-                employees: 247,
-                industryCategory: 'construction'
-            },
-            {
-                id: 3,
-                name: '(주)케미칼코리아',
-                registrationNumber: '345-67-89012',
-                ownerName: '박화학',
-                ownerContact: '010-3456-7890',
-                contact: '051-3456-7890',
-                jurisdiction: '부산지방고용노동청',
-                industry: '기초화학물질 제조업',
-                location: '부산광역시 사상구 주례로 47',
-                employees: 156,
-                industryCategory: 'chemical'
-            },
-            {
-                id: 4,
-                name: '행복마트',
-                registrationNumber: '456-78-90123',
-                ownerName: '정상점',
-                ownerContact: '010-4567-8901',
-                contact: '02-4567-8901',
-                jurisdiction: '서울동부지방고용노동청',
-                industry: '종합소매업',
-                location: '서울특별시 송파구 올림픽로 300',
-                employees: 45,
-                industryCategory: 'retail'
-            }
-        ];
+            // 테스트용 사업장 데이터 - 완전한 데이터 구조
+            const businesses = [
+                {
+                    id: 1,
+                    name: '(주)대한제조',
+                    registrationNumber: '123-45-67890',
+                    ownerName: '김대한',
+                    ownerContact: '010-1234-5678',
+                    contact: '02-1234-5678',
+                    jurisdiction: '안산지방고용노동청',
+                    industry: '플라스틱제품 제조업',
+                    industryCategory: 'manufacturing',
+                    location: '경기도 안산시 단원구 공단로 123',
+                    branchType: '본사',
+                    employees: 85,
+                    revenue: 12000000000,
+                    foundedYear: 2015,
+                    description: '자동차 부품용 플라스틱제품 제조업체',
+                    allSites: [
+                        {
+                            siteName: '자동차부품 제조라인 A동',
+                            address: '경기도 안산시 단원구 공단로 123',
+                            client: '현대자동차그룹',
+                            projectType: '플라스틱제품제조',
+                            progress: 85,
+                            currentProcess: '최종 품질검사 단계',
+                            contractAmount: 25000000000,
+                            status: '진행중',
+                            startDate: '2024.01.01',
+                            endDate: '2024.12.31',
+                            isCurrent: true
+                        },
+                        {
+                            siteName: '자동차부품 제조라인 B동',
+                            address: '경기도 안산시 단원구 공단로 125',
+                            client: '기아자동차',
+                            projectType: '플라스틱제품제조',
+                            progress: 45,
+                            currentProcess: '중간 조립 단계',
+                            contractAmount: 18000000000,
+                            status: '진행중',
+                            startDate: '2024.06.01',
+                            endDate: '2025.05.31',
+                            isCurrent: false
+                        }
+                    ],
+                    projectInfo: {
+                        client: '현대자동차그룹',
+                        mainContractor: '123-45-67890',
+                        subContractors: [
+                            { name: '(주)정밀금형', field: '금형제작', registrationNumber: '234-56-78901' },
+                            { name: '(주)플라스틱가공', field: '사출성형', registrationNumber: '345-67-89012' }
+                        ],
+                        siteName: '자동차부품 제조라인 A동',
+                        projectType: '플라스틱제품제조',
+                        progress: 85,
+                        contractPeriod: '2024.01.01 ~ 2024.12.31',
+                        contractAmount: 25000000000,
+                        safetyManager: {
+                            name: '이안전',
+                            contact: '010-2345-6789',
+                            email: 'safety@daehanjj.com',
+                            license: '산업안전기사',
+                            appointmentDate: '2024.01.01',
+                            dismissalDate: '',
+                            concurrentType: '전담'
+                        },
+                        safetyManagerHistory: [
+                            { year: 2024, status: '선임', name: '이안전', license: '산업안전기사', appointmentDate: '2024.01.01', dismissalDate: '', reason: '신규선임', education: '법정교육 이수' },
+                            { year: 2023, status: '선임', name: '박안전', license: '산업안전산업기사', appointmentDate: '2023.01.15', dismissalDate: '2023.12.31', reason: '정상퇴사', education: '법정교육 이수' },
+                            { year: 2022, status: '미선임', name: '-', license: '-', appointmentDate: '-', dismissalDate: '-', reason: '코로나19로 인한 사업축소' },
+                            { year: 2021, status: '선임', name: '최안전', license: '산업안전기사', appointmentDate: '2021.03.01', dismissalDate: '2021.12.31', reason: '타사이직', education: '법정교육 이수' },
+                            { year: 2020, status: '선임', name: '정안전', license: '산업안전산업기사', appointmentDate: '2020.01.01', dismissalDate: '2020.12.31', reason: '계약만료', education: '법정교육 이수' }
+                        ],
+                        accidentHistory: [
+                            { year: 2024, accidents: 2, deaths: 0, injuries: 2 },
+                            { year: 2023, accidents: 3, deaths: 0, injuries: 4 },
+                            { year: 2022, accidents: 1, deaths: 0, injuries: 1 },
+                            { year: 2021, accidents: 2, deaths: 1, injuries: 2 },
+                            { year: 2020, accidents: 1, deaths: 0, injuries: 1 }
+                        ],
+                        accidentDetails: [
+                            {
+                                year: 2024,
+                                name: '김**',
+                                nationality: '한국',
+                                hireDate: '2022.03.15',
+                                workType: '정규직',
+                                injuryType: '화상',
+                                injuryLocation: '왼손',
+                                expectedLeave: 45,
+                                death: false,
+                                workCategory: '사출성형작업',
+                                cause: '금형 온도 미확인 상태에서 작업 진행'
+                            },
+                            {
+                                year: 2024,
+                                name: '이**',
+                                nationality: '베트남',
+                                hireDate: '2023.06.01',
+                                workType: '계약직',
+                                injuryType: '절단',
+                                injuryLocation: '오른손 검지',
+                                expectedLeave: 90,
+                                death: false,
+                                workCategory: '절단가공',
+                                cause: '커터기 안전장치 미작동'
+                            }
+                        ],
+                        supervisionHistory: [
+                            { year: 2024, month: '3월', type: '정기감독', result: '시정지시', violations: 3 },
+                            { year: 2023, month: '11월', type: '수시감독', result: '경미한 위반', violations: 1 },
+                            { year: 2023, month: '6월', type: '정기감독', result: '시정명령', violations: 5 },
+                            { year: 2022, month: '9월', type: '사업장 점검', result: '적정', violations: 0 }
+                        ],
+                        fineHistory: [
+                            {
+                                year: 2024,
+                                violationType: '안전조치 미이행',
+                                violationDetail: '프레스기 방호장치 미설치',
+                                fineAmount: 5000000,
+                                paymentStatus: '납부완료',
+                                paymentDate: '2024.04.15',
+                                violationLaw: '산업안전보건법 제38조'
+                            },
+                            {
+                                year: 2023,
+                                violationType: '안전보건교육 미실시',
+                                violationDetail: '신규채용자 교육 미실시',
+                                fineAmount: 3000000,
+                                paymentStatus: '납부완료',
+                                paymentDate: '2023.12.20',
+                                violationLaw: '산업안전보건법 제29조'
+                            }
+                        ],
+                        judicialHistory: [
+                            {
+                                year: 2021,
+                                caseType: '업무상과실치사',
+                                violationDetail: '프레스 작업 중 안전수칙 미준수로 근로자 사망',
+                                referralDate: '2021.08.15',
+                                prosecutionStatus: '기소',
+                                courtResult: '벌금 1000만원',
+                                finalDate: '2021.12.10',
+                                violationLaw: '중대재해처벌법, 산업안전보건법 제38조',
+                                defendant: '안전관리책임자 정**'
+                            }
+                        ]
+                    },
+                    laborInfo: {
+                        complaintsHistory: [
+                            {
+                                year: 2024,
+                                complaints: 4,
+                                victims: 7,
+                                totalAmount: 28000000,
+                                types: [
+                                    { type: '임금체불', amount: 18000000, victims: 4 },
+                                    { type: '연차수당 미지급', amount: 6000000, victims: 2 },
+                                    { type: '퇴직금 미지급', amount: 4000000, victims: 1 }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    id: 2,
+                    name: '(주)삼성건설',
+                    registrationNumber: '234-56-78901',
+                    ownerName: '이삼성',
+                    ownerContact: '010-2345-6789',
+                    contact: '02-2345-6789',
+                    jurisdiction: '서울남부고용노동청',
+                    industry: '건축공사업',
+                    industryCategory: 'construction',
+                    location: '서울시 강남구 테헤란로 152',
+                    branchType: '본사',
+                    employees: 250,
+                    revenue: 150000000000,
+                    foundedYear: 2005,
+                    description: '대형 건축 및 토목공사 전문업체',
+                    allSites: [
+                        {
+                            siteName: '강남 오피스빌딩 신축공사',
+                            address: '서울시 강남구 테헤란로 427',
+                            client: '(주)강남개발',
+                            projectType: '건축공사',
+                            progress: 65,
+                            currentProcess: '내부 마감 공사',
+                            contractAmount: 85000000000,
+                            status: '진행중',
+                            startDate: '2023.03.01',
+                            endDate: '2025.12.30',
+                            isCurrent: true
+                        }
+                    ],
+                    projectInfo: {
+                        client: '(주)강남개발',
+                        mainContractor: '234-56-78901',
+                        subContractors: [
+                            { name: '(주)철근콘크리트', field: '철근콘크리트', registrationNumber: '345-67-89012' },
+                            { name: '(주)전기설비', field: '전기설비', registrationNumber: '456-78-90123' },
+                            { name: '(주)기계설비', field: '기계설비', registrationNumber: '567-89-01234' }
+                        ],
+                        siteName: '강남 오피스빌딩 신축공사',
+                        projectType: '건축공사',
+                        progress: 65,
+                        contractPeriod: '2023.03.01 ~ 2025.12.30',
+                        contractAmount: 85000000000,
+                        safetyManager: {
+                            name: '박안전',
+                            contact: '010-3456-7890',
+                            email: 'safety@samsungconst.com',
+                            license: '건설안전기사',
+                            appointmentDate: '2023.03.01',
+                            dismissalDate: '',
+                            concurrentType: '전담'
+                        },
+                        safetyManagerHistory: [
+                            { year: 2024, status: '선임', name: '박안전', license: '건설안전기사', appointmentDate: '2023.03.01', dismissalDate: '', reason: '현재 재직중', education: '법정교육 이수' },
+                            { year: 2023, status: '선임', name: '박안전', license: '건설안전기사', appointmentDate: '2023.03.01', dismissalDate: '', reason: '현재 재직중', education: '법정교육 이수' },
+                            { year: 2022, status: '선임', name: '김건설', license: '건설안전산업기사', appointmentDate: '2022.01.01', dismissalDate: '2022.12.31', reason: '타사이직', education: '법정교육 이수' },
+                            { year: 2021, status: '선임', name: '정토목', license: '건설안전기사', appointmentDate: '2021.01.01', dismissalDate: '2021.12.31', reason: '정년퇴직', education: '법정교육 이수' },
+                            { year: 2020, status: '선임', name: '최건축', license: '건설안전기사', appointmentDate: '2020.01.01', dismissalDate: '2020.12.31', reason: '계약만료', education: '법정교육 이수' }
+                        ],
+                        accidentHistory: [
+                            { year: 2024, accidents: 1, deaths: 0, injuries: 1 },
+                            { year: 2023, accidents: 2, deaths: 0, injuries: 3 },
+                            { year: 2022, accidents: 0, deaths: 0, injuries: 0 },
+                            { year: 2021, accidents: 3, deaths: 0, injuries: 4 },
+                            { year: 2020, accidents: 1, deaths: 0, injuries: 2 }
+                        ],
+                        accidentDetails: [
+                            {
+                                year: 2024,
+                                name: '최**',
+                                nationality: '한국',
+                                hireDate: '2020.05.10',
+                                workType: '정규직',
+                                injuryType: '골절',
+                                injuryLocation: '오른쪽 다리',
+                                expectedLeave: 120,
+                                death: false,
+                                workCategory: '철근 조립 작업',
+                                cause: '발판 미설치 상태에서 고소작업'
+                            }
+                        ],
+                        supervisionHistory: [
+                            { year: 2024, month: '5월', type: '정기감독', result: '시정지시', violations: 2 },
+                            { year: 2023, month: '10월', type: '수시감독', result: '경미한 위반', violations: 1 }
+                        ],
+                        fineHistory: [
+                            {
+                                year: 2024,
+                                violationType: '추락방지조치 미이행',
+                                violationDetail: '개구부 안전난간 미설치',
+                                fineAmount: 8000000,
+                                paymentStatus: '납부완료',
+                                paymentDate: '2024.06.10',
+                                violationLaw: '산업안전보건법 제38조'
+                            }
+                        ],
+                        judicialHistory: []
+                    },
+                    laborInfo: {
+                        complaintsHistory: [
+                            {
+                                year: 2024,
+                                complaints: 2,
+                                victims: 3,
+                                totalAmount: 15000000,
+                                types: [
+                                    { type: '연장근로수당 미지급', amount: 10000000, victims: 2 },
+                                    { type: '퇴직금 미지급', amount: 5000000, victims: 1 }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ];
 
-        function generateSupervisionPoints(business) {
-            const points = [];
-            
-            if (business.industryCategory === 'manufacturing') {
-                points.push({
-                    category: '기계안전',
-                    priority: '상',
-                    item: '위험기계·기구 방호장치 설치 및 작동상태 점검',
-                    detail: '프레스, 전단기, 연삭기 등 방호장치 설치·작동상태, 비상정지장치 기능점검, 안전작업절차 준수여부'
-                });
-                points.push({
-                    category: '밀폐공간안전',
-                    priority: '상',
-                    item: '밀폐공간 작업 시 질식재해 예방조치 이행실태',
-                    detail: '출입 전 산소농도·유해가스 측정, 환기설비 가동, 감시인 배치, 구조·응급처치 장비 비치상태'
-                });
-            }
+            const jurisdictions = ['안산지방고용노동청', '서울남부고용노동청', '부산고용노동청', '대구고용노동청'];
 
-            if (business.industryCategory === 'construction') {
-                points.push({
-                    category: '추락방지',
-                    priority: '상',
-                    item: '고소작업장 추락방지시설 설치 및 개인보호구 착용실태',
-                    detail: '작업발판, 안전난간, 추락방지망 설치상태, 안전대 착용 및 고리걸이 설치, 개구부 덮개 설치여부'
-                });
-                points.push({
-                    category: '중장비안전',
-                    priority: '상',
-                    item: '이동식크레인 등 건설기계 안전장치 및 운전자격 점검',
-                    detail: '과부하방지장치, 모멘트리미터 등 안전장치 작동상태, 운전자 자격증명 및 신호수 배치'
-                });
-            }
+            const formatCurrency = (amount) => {
+                return new Intl.NumberFormat('ko-KR').format(amount) + '원';
+            };
 
-            if (business.industryCategory === 'chemical') {
-                points.push({
-                    category: '화학사고예방',
-                    priority: '상',
-                    item: '화학물질 누출·폭발 예방을 위한 안전관리체계 점검',
-                    detail: '공정안전보고서 작성·이행상태, MSDS 게시·교육, 누출감지장치 및 방재시설 점검'
-                });
-                points.push({
-                    category: '위험물저장',
-                    priority: '상',
-                    item: '유독물질 저장·취급 허가사항 및 안전기준 준수여부',
-                    detail: '저장시설 구조·설비기준 적합성, 허가량 대비 저장량 확인, 응급처치 약품 비치상태'
-                });
-            }
-
-            points.push({
-                category: '안전보건교육',
-                priority: '중',
-                item: '법정 안전보건교육 실시현황 및 교육내용 적정성 점검',
-                detail: '신규채용자, 작업내용 변경자, 정기교육 실시여부, 교육시간 준수, 교육대장 비치현황'
-            });
-
-            points.push({
-                category: '작업환경관리',
-                priority: '중',
-                item: '작업환경측정 실시 및 결과에 따른 개선조치 이행상태',
-                detail: '측정대상 작업장 파악, 측정주기 준수여부, 측정결과 근로자 통보, 노출기준 초과 시 개선조치'
-            });
-
-            points.push({
-                category: '개인보호구',
-                priority: '하',
-                item: '개인보호구 지급·착용 관리 및 성능유지 상태',
-                detail: '작업별 적정 보호구 지급여부, 근로자 착용실태, 보호구 성능검사 및 교체주기 관리'
-            });
-
-            points.push({
-                category: '안전점검',
-                priority: '하',
-                item: '일상점검 및 정기점검 실시 현황과 점검표 작성·보관',
-                detail: '작업 전 일상점검 실시, 정기점검 계획 수립·이행, 점검결과에 따른 조치사항 기록'
-            });
-
-            if (business.industryCategory === 'retail') {
-                points.push({
-                    category: '고객안전',
-                    priority: '하',
-                    item: '고객 이용구역 안전관리 및 사고예방 조치상태',
-                    detail: '진열대 고정상태, 통로 확보 및 바닥 미끄럼 방지조치, 계단 안전손잡이 설치'
-                });
-            }
-
-            return points;
-        }
-
-        function renderBusinessCard(business) {
-            return `
-                <div class="business-card">
-                    <div class="business-header">
-                        <div>
-                            <span class="business-title">${business.name}</span>
-                            <span class="badge badge-industry">${business.industry}</span>
-                            <span class="badge badge-employees">${business.employees}명</span>
-                        </div>
-                    </div>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <div class="info-label">등록번호</div>
-                            <div class="info-value">${business.registrationNumber}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">사업주</div>
-                            <div class="info-value">${business.ownerName}</div>
-                            <div style="font-size: 0.75rem; color: #64748B;">${business.ownerContact}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">사업장 연락처</div>
-                            <div class="info-value">${business.contact}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">관할지청</div>
-                            <div class="info-value" style="font-size: 0.75rem;">${business.jurisdiction}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">소재지</div>
-                            <div class="info-value">${business.location}</div>
-                        </div>
-                    </div>
-                    <button class="btn-primary" onclick="generateReport(${business.id})">
-                        산업안전 감독착안사항 생성
-                    </button>
-                </div>
-            `;
-        }
-
-        function renderSupervisionPoints(points) {
-            const sorted = points.sort((a, b) => {
-                const order = { '상': 1, '중': 2, '하': 3 };
-                return order[a.priority] - order[b.priority];
-            });
-
-            return sorted.map(point => `
-                <div class="supervision-item priority-${point.priority === '상' ? 'high' : point.priority === '중' ? 'mid' : 'low'}">
-                    <div style="display: flex; align-items: start; gap: 0.75rem;">
-                        <span class="priority-badge priority-${point.priority === '상' ? 'high' : point.priority === '중' ? 'mid' : 'low'}">
-                            ${point.priority}
-                        </span>
-                        <span class="category-badge">${point.category}</span>
-                        <div style="flex: 1;">
-                            <div class="item-title">${point.item}</div>
-                            <div class="item-detail">${point.detail}</div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function filterBusinesses() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const jurisdiction = document.getElementById('jurisdictionSelect').value;
-
-            const filtered = businesses.filter(b => {
-                const matchesSearch = !searchTerm || 
-                    b.name.toLowerCase().includes(searchTerm) ||
-                    b.registrationNumber.includes(searchTerm) ||
-                    b.ownerName.toLowerCase().includes(searchTerm);
-                
-                const matchesJurisdiction = !jurisdiction || b.jurisdiction === jurisdiction;
-                
+            const filteredBusinesses = businesses.filter(business => {
+                const matchesSearch = business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                    business.registrationNumber.includes(searchTerm);
+                const matchesJurisdiction = !selectedJurisdiction || business.jurisdiction === selectedJurisdiction;
                 return matchesSearch && matchesJurisdiction;
             });
 
-            const resultsContainer = document.getElementById('searchResults');
-            const emptyState = document.getElementById('emptyState');
+            const handlePrint = () => {
+                window.print();
+            };
 
-            if ((searchTerm || jurisdiction) && filtered.length > 0) {
-                resultsContainer.innerHTML = filtered.map(renderBusinessCard).join('');
-                resultsContainer.style.display = 'block';
-                emptyState.style.display = 'none';
-            } else if (searchTerm || jurisdiction) {
-                resultsContainer.innerHTML = '<div style="text-align: center; padding: 2rem; color: #64748B;">검색 결과가 없습니다.</div>';
-                resultsContainer.style.display = 'block';
-                emptyState.style.display = 'none';
-            } else {
-                resultsContainer.style.display = 'none';
-                emptyState.style.display = 'block';
-            }
-        }
+            // 감독착안사항 생성 로직
+            const generateSupervisionPoints = (business) => {
+                const points = [];
+                const accidentDetails = business.projectInfo?.accidentDetails || [];
+                const supervisionHistory = business.projectInfo?.supervisionHistory || [];
+                const fineHistory = business.projectInfo?.fineHistory || [];
+                const safetyManagerHistory = business.projectInfo?.safetyManagerHistory || [];
+                const judicialHistory = business.projectInfo?.judicialHistory || [];
 
-        function generateReport(businessId) {
-            const business = businesses.find(b => b.id === businessId);
-            if (!business) return;
+                // 안전관리자 미선임 점검
+                const unappointedPeriods = safetyManagerHistory.filter(h => h.status === '미선임');
+                if (unappointedPeriods.length > 0) {
+                    points.push({
+                        category: '안전관리자미선임',
+                        priority: '상',
+                        item: `최근 5년간 안전관리자 미선임 ${unappointedPeriods.length}년 - 법정 의무사항 이행 점검`,
+                        detail: `${unappointedPeriods.map(p => `${p.year}년(${p.reason})`).join(', ')} 미선임 기간의 안전관리 공백 상태 확인`
+                    });
+                }
 
-            const points = generateSupervisionPoints(business);
-            
-            document.getElementById('reportTitle').textContent = `${business.name} 산업안전 감독착안사항 보고서`;
-            document.getElementById('reportContent').innerHTML = `
-                <div class="section">
-                    <div class="section-title">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                        </svg>
-                        산업안전 감독착안사항 (${points.length}개 항목)
-                    </div>
-                    ${renderSupervisionPoints(points)}
-                    <div style="margin-top: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
-                        <div style="background: #CBD5E1; padding: 0.75rem; border-radius: 0.5rem;">
-                            <div style="font-size: 1.25rem; font-weight: bold; color: #1E293B;">
-                                ${points.filter(p => p.priority === '상').length}개
+                // 산재 발생 이력
+                if (accidentDetails.length > 0) {
+                    points.push({
+                        category: '산재발생이력',
+                        priority: '상',
+                        item: `최근 산재 ${accidentDetails.length}건 발생 - 재발방지대책 이행여부 점검`,
+                        detail: accidentDetails.map(a => `${a.year}년 ${a.injuryType}(${a.workCategory})`).join(', ')
+                    });
+                }
+
+                // 과태료 이력
+                if (fineHistory.length > 0) {
+                    points.push({
+                        category: '과태료처분이력',
+                        priority: '중',
+                        item: `과거 과태료 부과 ${fineHistory.length}건 - 재위반 여부 점검`,
+                        detail: fineHistory.map(f => `${f.year}년 ${f.violationType}(${formatCurrency(f.fineAmount)})`).join(', ')
+                    });
+                }
+
+                // 사법처리 이력
+                if (judicialHistory.length > 0) {
+                    points.push({
+                        category: '사법처리이력',
+                        priority: '상',
+                        item: `사법처리 ${judicialHistory.length}건 - 중대재해 재발방지대책 점검`,
+                        detail: judicialHistory.map(j => `${j.year}년 ${j.caseType}(${j.courtResult})`).join(', ')
+                    });
+                }
+
+                // 업종별 점검사항
+                if (business.industryCategory === 'manufacturing') {
+                    points.push({
+                        category: '기계안전',
+                        priority: '상',
+                        item: '프레스, 전단기 등 위험기계 방호장치 작동상태 점검',
+                        detail: '프레스기, 전단기, 연삭기 등 방호장치 설치·작동상태, 비상정지장치 기능점검'
+                    });
+                    points.push({
+                        category: '화학물질안전',
+                        priority: '중',
+                        item: '화학물질 취급·저장 안전수칙 준수여부',
+                        detail: 'MSDS 비치, 국소배기장치 가동, 보호구 착용상태 확인'
+                    });
+                }
+
+                if (business.industryCategory === 'construction') {
+                    points.push({
+                        category: '추락재해예방',
+                        priority: '상',
+                        item: '추락위험 작업장소 안전조치 이행 점검',
+                        detail: '개구부 덮개 설치상태, 안전난간 설치, 안전대 부착설비 확인'
+                    });
+                    points.push({
+                        category: '중장비안전',
+                        priority: '중',
+                        item: '건설기계 안전운전 및 유도자 배치 점검',
+                        detail: '타워크레인, 지게차 등 안전인증 확인, 신호수 배치상태'
+                    });
+                }
+
+                // 기본 점검사항
+                points.push({
+                    category: '안전보건교육',
+                    priority: '중',
+                    item: '법정 안전보건교육 실시현황 점검',
+                    detail: '신규채용자, 작업내용 변경자, 정기교육 실시여부'
+                });
+
+                return points;
+            };
+
+            const generateReport = (business) => {
+                setIsGenerating(true);
+                setTimeout(() => {
+                    setReport({
+                        businessInfo: business,
+                        supervisionPoints: generateSupervisionPoints(business),
+                        supervisionType: supervisionType
+                    });
+                    setIsGenerating(false);
+                }, 1500);
+            };
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
+                    <div className="max-w-7xl mx-auto">
+                        {/* 헤더 */}
+                        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 mb-6 border border-blue-200">
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-blue-200 p-2 rounded-xl">
+                                        <Shield className="w-8 h-8 text-blue-600" />
+                                    </div>
+                                    <h1 className="text-3xl font-bold text-slate-800">
+                                        종합 산업안전·근로감독 시스템 V3
+                                    </h1>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setSupervisionType('industrial')}
+                                        className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                                            supervisionType === 'industrial'
+                                                ? 'bg-blue-500 text-white shadow-md'
+                                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                        }`}
+                                    >
+                                        <Shield className="w-4 h-4 inline mr-1" />
+                                        산업안전감독관
+                                    </button>
+                                    <button
+                                        onClick={() => setSupervisionType('labor')}
+                                        className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                                            supervisionType === 'labor'
+                                                ? 'bg-green-500 text-white shadow-md'
+                                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                        }`}
+                                    >
+                                        <Scale className="w-4 h-4 inline mr-1" />
+                                        근로감독관
+                                    </button>
+                                </div>
                             </div>
-                            <div style="color: #64748B;">상급 우선순위</div>
-                        </div>
-                        <div style="background: #94A3B8; padding: 0.75rem; border-radius: 0.5rem;">
-                            <div style="font-size: 1.25rem; font-weight: bold; color: #1E293B;">
-                                ${points.filter(p => p.priority === '중').length}개
+
+                            {/* 검색 영역 */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
+                                    <input
+                                        type="text"
+                                        placeholder="사업장명 또는 사업자등록번호 검색..."
+                                        className="w-full pl-10 pr-4 py-3 border-2 border-blue-200 rounded-lg focus:outline-none focus:border-blue-400"
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                    />
+                                </div>
+                                <div>
+                                    <select
+                                        className="w-full px-4 py-3 border-2 border-blue-200 rounded-lg focus:outline-none focus:border-blue-400"
+                                        value={selectedJurisdiction}
+                                        onChange={(e) => setSelectedJurisdiction(e.target.value)}
+                                    >
+                                        <option value="">전체 관할지청</option>
+                                        {jurisdictions.map(j => (
+                                            <option key={j} value={j}>{j}</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
-                            <div style="color: #64748B;">중급 우선순위</div>
                         </div>
-                        <div style="background: #F1F5F9; padding: 0.75rem; border-radius: 0.5rem;">
-                            <div style="font-size: 1.25rem; font-weight: bold; color: #475569;">
-                                ${points.filter(p => p.priority === '하').length}개
+
+                        {/* 검색 결과 */}
+                        {searchTerm && filteredBusinesses.length > 0 && !report && (
+                            <div className="mb-6 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-blue-200">
+                                <h3 className="text-lg font-semibold mb-4 text-blue-800 flex items-center gap-2">
+                                    <Building2 className="w-5 h-5" />
+                                    검색 결과
+                                </h3>
+                                <div className="space-y-4">
+                                    {filteredBusinesses.map((business) => (
+                                        <div key={business.id} className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm hover:shadow-md transition-shadow">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                                                    <Building2 className="w-5 h-5" />
+                                                    {business.name}
+                                                </h4>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                                                        {business.jurisdiction}
+                                                    </span>
+                                                    <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">
+                                                        {business.industry}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-2 text-sm text-gray-600 mb-3">
+                                                <div>📍 {business.location}</div>
+                                                <div>👔 {business.ownerName}</div>
+                                                <div>📞 {business.contact}</div>
+                                                <div>👥 {business.employees}명</div>
+                                            </div>
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedBusiness(business);
+                                                    generateReport(business);
+                                                }}
+                                                className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors font-medium"
+                                            >
+                                                <FileText className="w-4 h-4 inline mr-2" />
+                                                감독착안사항 생성
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                            <div style="color: #64748B;">하급 우선순위</div>
-                        </div>
+                        )}
+
+                        {/* 로딩 상태 */}
+                        {isGenerating && (
+                            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-12 text-center border border-blue-200">
+                                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                                <p className="text-lg text-gray-600">감독착안사항을 생성하고 있습니다...</p>
+                            </div>
+                        )}
+
+                        {/* 보고서 */}
+                        {report && (
+                            <div className="bg-white rounded-2xl shadow-lg p-8">
+                                {/* 보고서 헤더 */}
+                                <div className="border-b-2 border-gray-300 pb-4 mb-6 no-print">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h2 className="text-2xl font-bold text-gray-900">
+                                            {report.businessInfo.name} - {report.supervisionType === 'industrial' ? '산업안전' : '근로'} 감독착안사항
+                                        </h2>
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={handlePrint}
+                                                className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                                            >
+                                                <Printer className="w-4 h-4" />
+                                                인쇄
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setReport(null);
+                                                    setSelectedBusiness(null);
+                                                }}
+                                                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                                            >
+                                                닫기
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="text-sm text-gray-600">
+                                        생성일시: {new Date().toLocaleString('ko-KR')}
+                                    </div>
+                                </div>
+
+                                {/* 산업안전감독관용 UI */}
+                                {report.supervisionType === 'industrial' && (
+                                    <div className="space-y-6">
+                                        {/* 1. 사업장 기본정보 */}
+                                        <div className="bg-slate-50 p-4 rounded-lg">
+                                            <h3 className="font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                                                <Building2 className="w-4 h-4" />
+                                                1. 사업장 기본정보
+                                            </h3>
+                                            <div className="grid grid-cols-2 gap-3 text-sm">
+                                                <div><span className="font-medium">사업장명:</span> {report.businessInfo.name}</div>
+                                                <div><span className="font-medium">사업자등록번호:</span> {report.businessInfo.registrationNumber}</div>
+                                                <div><span className="font-medium">대표자:</span> {report.businessInfo.ownerName}</div>
+                                                <div><span className="font-medium">연락처:</span> {report.businessInfo.contact}</div>
+                                                <div><span className="font-medium">업종:</span> {report.businessInfo.industry}</div>
+                                                <div><span className="font-medium">소재지:</span> {report.businessInfo.location}</div>
+                                                <div><span className="font-medium">근로자수:</span> {report.businessInfo.employees}명</div>
+                                                <div><span className="font-medium">관할지청:</span> {report.businessInfo.jurisdiction}</div>
+                                            </div>
+                                        </div>
+
+                                        {/* 2. 프로젝트 구조 */}
+                                        <div className="bg-slate-50 p-4 rounded-lg">
+                                            <h3 className="font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                                                <Building2 className="w-4 h-4" />
+                                                2. 사업장 프로젝트 구조
+                                            </h3>
+                                            <div className="flex items-center justify-between">
+                                                <div className="bg-slate-200 p-3 rounded-lg text-center flex-1">
+                                                    <div className="text-xs text-slate-600 mb-1">🏢 발주자</div>
+                                                    <div className="font-medium text-slate-800">
+                                                        {report.businessInfo.projectInfo?.client || '미등록'}
+                                                    </div>
+                                                </div>
+                                                <div className="px-2">
+                                                    <div className="text-slate-500 text-xl">▶</div>
+                                                </div>
+                                                <div className="bg-slate-200 p-3 rounded-lg text-center flex-1">
+                                                    <div className="text-xs text-slate-600 mb-1">🏭 원수급</div>
+                                                    <div className="font-medium text-slate-800">{report.businessInfo.name}</div>
+                                                    <div className="text-xs text-slate-700">{report.businessInfo.registrationNumber}</div>
+                                                </div>
+                                                <div className="px-2">
+                                                    <div className="text-slate-500 text-xl">▶</div>
+                                                </div>
+                                                <div className="bg-slate-200 p-3 rounded-lg text-center flex-1">
+                                                    <div className="text-xs text-slate-600 mb-1">🔧 하수급</div>
+                                                    {report.businessInfo.projectInfo?.subContractors ? (
+                                                        <div>
+                                                            {report.businessInfo.projectInfo.subContractors.slice(0, 1).map((sub, idx) => (
+                                                                <div key={idx}>
+                                                                    <div className="font-medium text-slate-800">{sub.name}</div>
+                                                                    <div className="text-xs text-slate-600">{sub.field}</div>
+                                                                </div>
+                                                            ))}
+                                                            {report.businessInfo.projectInfo.subContractors.length > 1 && (
+                                                                <div className="text-xs text-slate-600 mt-1">
+                                                                    외 {report.businessInfo.projectInfo.subContractors.length - 1}개사
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    ) : '직접시공'}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* 3. 산재 발생 현황 */}
+                                        {report.businessInfo.projectInfo?.accidentHistory && (
+                                            <div className="bg-slate-50 p-4 rounded-lg">
+                                                <h3 className="font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                                                    <AlertTriangle className="w-4 h-4" />
+                                                    3. 산재 발생 현황 (최근 5년)
+                                                </h3>
+                                                <ResponsiveContainer width="100%" height={200}>
+                                                    <BarChart data={report.businessInfo.projectInfo.accidentHistory}>
+                                                        <CartesianGrid strokeDasharray="3 3" />
+                                                        <XAxis dataKey="year" />
+                                                        <YAxis />
+                                                        <Tooltip />
+                                                        <Legend />
+                                                        <Bar dataKey="accidents" fill="#f59e0b" name="발생건수" />
+                                                        <Bar dataKey="deaths" fill="#dc2626" name="사망자수" />
+                                                        <Bar dataKey="injuries" fill="#3b82f6" name="부상자수" />
+                                                    </BarChart>
+                                                </ResponsiveContainer>
+                                            </div>
+                                        )}
+
+                                        {/* 4. 안전관리자 선임 이력 */}
+                                        {report.businessInfo.projectInfo?.safetyManagerHistory && (
+                                            <div className="bg-slate-50 p-4 rounded-lg">
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <h3 className="font-semibold text-slate-700 flex items-center gap-2">
+                                                        <User className="w-4 h-4" />
+                                                        4. 안전관리자 선임 이력 (최근 5년)
+                                                    </h3>
+                                                    <button
+                                                        onClick={() => setShowSafetyManagerHistory(!showSafetyManagerHistory)}
+                                                        className="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded hover:bg-slate-300"
+                                                    >
+                                                        {showSafetyManagerHistory ? '접기' : '상세보기'}
+                                                    </button>
+                                                </div>
+                                                {showSafetyManagerHistory ? (
+                                                    <div className="space-y-2">
+                                                        {report.businessInfo.projectInfo.safetyManagerHistory.map((history, idx) => (
+                                                            <div key={idx} className={`p-2 rounded ${history.status === '선임' ? 'bg-green-50' : 'bg-red-50'}`}>
+                                                                <div className="flex items-center justify-between text-sm">
+                                                                    <span className="font-medium">{history.year}년</span>
+                                                                    <span className={`px-2 py-1 rounded text-xs ${history.status === '선임' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
+                                                                        {history.status === '선임' ? '✅' : '❌'}
+                                                                    </span>
+                                                                </div>
+                                                                {history.status === '선임' ? (
+                                                                    <div className="text-xs text-slate-700 mt-1">
+                                                                        {history.name} ({history.license}) - {history.appointmentDate}
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className="text-xs text-slate-600 mt-1">
+                                                                        미선임 사유: {history.reason}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <div className="grid grid-cols-3 gap-3 text-center text-sm">
+                                                        <div className="bg-green-100 p-2 rounded">
+                                                            <div className="text-xl font-bold text-green-700">
+                                                                {report.businessInfo.projectInfo.safetyManagerHistory.filter(h => h.status === '선임').length}년
+                                                            </div>
+                                                            <div className="text-green-700">선임</div>
+                                                        </div>
+                                                        <div className="bg-red-100 p-2 rounded">
+                                                            <div className="text-xl font-bold text-red-700">
+                                                                {report.businessInfo.projectInfo.safetyManagerHistory.filter(h => h.status === '미선임').length}년
+                                                            </div>
+                                                            <div className="text-red-700">미선임</div>
+                                                        </div>
+                                                        <div className="bg-blue-100 p-2 rounded">
+                                                            <div className="text-xl font-bold text-blue-700">
+                                                                {Math.round((report.businessInfo.projectInfo.safetyManagerHistory.filter(h => h.status === '선임').length / 5) * 100)}%
+                                                            </div>
+                                                            <div className="text-blue-700">선임률</div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {/* 5. 전체 현장 현황 */}
+                                        {report.businessInfo.allSites && report.businessInfo.allSites.length > 0 && (
+                                            <div className="bg-slate-50 p-4 rounded-lg">
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <h3 className="font-semibold text-slate-700 flex items-center gap-2">
+                                                        <MapPin className="w-4 h-4" />
+                                                        5. 전체 현장 현황 (총 {report.businessInfo.allSites.length}개)
+                                                    </h3>
+                                                    <button
+                                                        onClick={() => setShowAllSites(!showAllSites)}
+                                                        className="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded hover:bg-slate-300"
+                                                    >
+                                                        {showAllSites ? '접기' : '상세보기'}
+                                                    </button>
+                                                </div>
+                                                {showAllSites ? (
+                                                    <div className="space-y-3">
+                                                        {report.businessInfo.allSites.map((site, idx) => (
+                                                            <div key={idx} className={`p-3 rounded border ${site.isCurrent ? 'bg-blue-50 border-blue-200' : 'bg-white border-slate-200'}`}>
+                                                                <div className="flex items-center justify-between mb-2">
+                                                                    <div className="font-medium text-slate-800">{site.siteName}</div>
+                                                                    {site.isCurrent && (
+                                                                        <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded">현재 공사</span>
+                                                                    )}
+                                                                </div>
+                                                                <div className="text-xs text-slate-600 space-y-1">
+                                                                    <div>📍 {site.address}</div>
+                                                                    <div>🏢 발주자: {site.client}</div>
+                                                                    <div>📅 {site.startDate} ~ {site.endDate}</div>
+                                                                    <div>💰 {formatCurrency(site.contractAmount)}</div>
+                                                                </div>
+                                                                <div className="mt-2">
+                                                                    <div className="flex items-center justify-between text-xs mb-1">
+                                                                        <span>진행률</span>
+                                                                        <span className="font-medium">{site.progress}%</span>
+                                                                    </div>
+                                                                    <div className="w-full bg-slate-200 rounded-full h-2">
+                                                                        <div
+                                                                            className="bg-blue-500 h-2 rounded-full transition-all"
+                                                                            style={{ width: `${site.progress}%` }}
+                                                                        ></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <div className="grid grid-cols-3 gap-3 text-center text-sm">
+                                                        <div className="bg-blue-100 p-2 rounded">
+                                                            <div className="text-xl font-bold text-blue-700">
+                                                                {report.businessInfo.allSites.filter(s => s.status === '진행중').length}개
+                                                            </div>
+                                                            <div className="text-blue-700">진행중</div>
+                                                        </div>
+                                                        <div className="bg-green-100 p-2 rounded">
+                                                            <div className="text-lg font-bold text-green-700">
+                                                                {formatCurrency(report.businessInfo.allSites.reduce((sum, s) => sum + s.contractAmount, 0))}
+                                                            </div>
+                                                            <div className="text-green-700">총 계약금액</div>
+                                                        </div>
+                                                        <div className="bg-orange-100 p-2 rounded">
+                                                            <div className="text-xl font-bold text-orange-700">
+                                                                {Math.round(report.businessInfo.allSites.reduce((sum, s) => sum + s.progress, 0) / report.businessInfo.allSites.length)}%
+                                                            </div>
+                                                            <div className="text-orange-700">평균 진행률</div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {/* 6. 감독착안사항 */}
+                                        <div className="bg-slate-50 p-4 rounded-lg">
+                                            <h3 className="font-semibold text-slate-700 mb-4 flex items-center gap-2">
+                                                <Shield className="w-4 h-4" />
+                                                6. 감독착안사항
+                                            </h3>
+                                            <div className="space-y-3">
+                                                {report.supervisionPoints.map((point, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className={`p-4 rounded-lg border-l-4 ${
+                                                            point.priority === '상' ? 'border-l-red-500 bg-red-50' :
+                                                            point.priority === '중' ? 'border-l-orange-500 bg-orange-50' :
+                                                            'border-l-green-500 bg-green-50'
+                                                        }`}
+                                                    >
+                                                        <div className="flex items-start gap-3">
+                                                            <span className={`px-3 py-1 rounded-full text-sm font-bold ${
+                                                                point.priority === '상' ? 'bg-red-200 text-red-800' :
+                                                                point.priority === '중' ? 'bg-orange-200 text-orange-800' :
+                                                                'bg-green-200 text-green-800'
+                                                            }`}>
+                                                                {point.priority}
+                                                            </span>
+                                                            <span className="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded">
+                                                                {point.category}
+                                                            </span>
+                                                            <div className="flex-1">
+                                                                <div className="font-medium text-slate-800 mb-1">{point.item}</div>
+                                                                <div className="text-sm text-slate-600">{point.detail}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            {/* 착안사항 요약 */}
+                                            <div className="mt-4 grid grid-cols-3 gap-4 text-center">
+                                                <div className="bg-red-100 p-3 rounded-lg">
+                                                    <div className="text-xl font-bold text-red-700">
+                                                        {report.supervisionPoints.filter(p => p.priority === '상').length}개
+                                                    </div>
+                                                    <div className="text-red-700">상급 우선순위</div>
+                                                </div>
+                                                <div className="bg-orange-100 p-3 rounded-lg">
+                                                    <div className="text-xl font-bold text-orange-700">
+                                                        {report.supervisionPoints.filter(p => p.priority === '중').length}개
+                                                    </div>
+                                                    <div className="text-orange-700">중급 우선순위</div>
+                                                </div>
+                                                <div className="bg-green-100 p-3 rounded-lg">
+                                                    <div className="text-xl font-bold text-green-700">
+                                                        {report.supervisionPoints.filter(p => p.priority === '하').length}개
+                                                    </div>
+                                                    <div className="text-green-700">하급 우선순위</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* 보고서 푸터 */}
+                                <div className="mt-8 pt-6 border-t border-slate-200 text-center text-sm text-slate-600">
+                                    <div>감독착안사항 생성일: {new Date().toLocaleDateString('ko-KR')}</div>
+                                    <div className="mt-2">
+                                        총 {report.supervisionPoints.filter(p => p.priority === '상').length}개 상급, 
+                                        {report.supervisionPoints.filter(p => p.priority === '중').length}개 중급, 
+                                        {report.supervisionPoints.filter(p => p.priority === '하').length}개 하급 사항
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
-            `;
+            );
+        };
 
-            document.getElementById('reportContainer').classList.remove('hidden');
-            document.getElementById('reportContainer').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        document.getElementById('searchInput').addEventListener('input', filterBusinesses);
-        document.getElementById('jurisdictionSelect').addEventListener('change', filterBusinesses);
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<SupervisionSystem />);
     </script>
 </body>
 </html>
