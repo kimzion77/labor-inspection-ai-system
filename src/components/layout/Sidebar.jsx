@@ -1,6 +1,6 @@
 import { ShieldCheck, FileText, SlidersHorizontal, Scale, Settings } from 'lucide-react';
 
-const Sidebar = ({ selectedService, onSelectService, isAdminMode, onToggleAdmin }) => {
+const Sidebar = ({ selectedService, onSelectService }) => {
     return (
         <aside className="sidebar">
             <div className="sidebar-header">

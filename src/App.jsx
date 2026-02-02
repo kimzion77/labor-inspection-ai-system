@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import PromptManager from './components/admin/PromptManager';
 import { exportToWord, exportToPDF } from './utils/pdfExport'; // exportToPDF is used for Contract PDF
 import { contractApi } from './api/contractApi';
 import { apiClient } from './utils/apiClient'; // Used for initial connection check only
@@ -39,7 +38,6 @@ function App() {
     const [isConnected, setIsConnected] = useState(false);
     const [selectedDB, setSelectedDB] = useState(null);
 
-    const [isAdminMode, setIsAdminMode] = useState(false);
     const [generatedContract, setGeneratedContract] = useState('');
     const [step, setStep] = useState(1); // 1: Upload, 2: Structure, 3: Analysis, 4: Contract Generation
 
@@ -301,8 +299,6 @@ function App() {
             <Sidebar
                 selectedService={selectedService}
                 onSelectService={handleAnalysisStart}
-                isAdminMode={isAdminMode}
-                onToggleAdmin={() => setIsAdminMode(!isAdminMode)}
             />
 
             <div className="main-content">
@@ -311,156 +307,150 @@ function App() {
                     isConnected={isConnected}
                 />
 
-                {/* Show Step Progress unless in Admin Mode */}
-                {!isAdminMode && (
-                    <StepProgress
-                        step={step}
-                        files={files}
-                        analysisResult={analysisResult}
-                    />
-                )}
+                {/* Step Progress */}
+                <StepProgress
+                    step={step}
+                    files={files}
+                    analysisResult={analysisResult}
+                />
 
                 <div className="content-area">
-                    {isAdminMode ? (
-                        <PromptManager onBack={() => setIsAdminMode(false)} />
-                    ) : (
-                        <div>
+                    <div>
 
-                            {/* Step 4: Generation Phase */}
-                            {step === 4 ? (
-                                <Step4Generation
-                                    previewUrls={previewUrls}
-                                    extractedText={extractedText}
-                                    generatedContract={generatedContract}
-                                    onContractChange={setGeneratedContract}
-                                    onDownloadWord={downloadContractWord}
-                                    onDownloadPDF={downloadContractPDF}
-                                    contractRef={contractRef}
-                                />
-                            ) : files.length === 0 ? (
-                                // Step 1: Upload
-                                <Step1Upload onFileChange={handleFileChange} />
-                            ) : (
-                                // Split View (Step 2 & 3)
-                                <div className="split-view">
-                                    {/* Left Panel: Document Preview */}
-                                    <div className="document-panel">
-                                        <div className="panel-header">
-                                            <div className="panel-title">업로드된 문서</div>
-                                        </div>
-                                        {previewUrls.map((url, idx) => (
-                                            <img key={idx} src={url} alt={`문서 ${idx + 1}`} className="document-image" />
-                                        ))}
-                                        {!analysisResult && (
-                                            <button onClick={extractOCR} className="upload-button" style={{ marginTop: '16px', width: '100%' }}>
-                                                분석 시작
-                                            </button>
-                                        )}
+                        {/* Step 4: Generation Phase */}
+                        {step === 4 ? (
+                            <Step4Generation
+                                previewUrls={previewUrls}
+                                extractedText={extractedText}
+                                generatedContract={generatedContract}
+                                onContractChange={setGeneratedContract}
+                                onDownloadWord={downloadContractWord}
+                                onDownloadPDF={downloadContractPDF}
+                                contractRef={contractRef}
+                            />
+                        ) : files.length === 0 ? (
+                            // Step 1: Upload
+                            <Step1Upload onFileChange={handleFileChange} />
+                        ) : (
+                            // Split View (Step 2 & 3)
+                            <div className="split-view">
+                                {/* Left Panel: Document Preview */}
+                                <div className="document-panel">
+                                    <div className="panel-header">
+                                        <div className="panel-title">업로드된 문서</div>
                                     </div>
-
-                                    {/* Right Panel: Working Area */}
-                                    <div className={`analysis-panel ${(step === 3 && !isExpanded) ? 'scroll-hidden' : 'scroll-visible'}`} style={{
-                                        position: 'relative',
-                                        height: '100%',
-                                        transition: 'max-height 0.3s ease-in-out'
-                                    }}>
-                                        <div className="panel-header">
-                                            <div className="panel-title">분석 결과</div>
-                                        </div>
-
-                                        {/* Step 2: Structure Data Confirmation */}
-                                        {structuredData && !analysisResult && (
-                                            <Step2Structure
-                                                structuredData={structuredData}
-                                                setStructuredData={setStructuredData}
-                                                userContext={userContext}
-                                                setUserContext={setUserContext}
-                                                onConfirm={confirmAndAnalyze}
-                                                onReUpload={handleReUpload}
-                                            />
-                                        )}
-
-                                        {/* Step 3: Analysis Results */}
-                                        {analysisResult && (
-                                            <div style={{ paddingBottom: isExpanded ? '0' : '60px' }}>
-                                                <Step3Analysis
-                                                    analysisResult={analysisResult}
-                                                    userContext={userContext}
-                                                    onDownloadPDF={downloadAnalysisPDF}
-                                                    onGenerateContract={generateContract}
-                                                    onSelectDB={setSelectedDB}
-                                                    resultRef={analysisResultRef}
-                                                />
-                                            </div>
-                                        )}
-
-                                        {/* Loading State Placeholder when analyzing */}
-                                        {isAnalyzing && !structuredData && !analysisResult && (
-                                            // Initial OCR loading
-                                            <div style={{ textAlign: 'center', padding: '100px 0', color: '#64748b' }}>
-                                                <div className="loading-spinner"></div>
-                                                <div style={{ marginTop: '16px' }}>분석 대기 중...</div>
-                                            </div>
-                                        )}
-                                        {/* Structure -> Analysis Loading */}
-                                        {isAnalyzing && structuredData && (
-                                            <div style={{ textAlign: 'center', padding: '100px 0', color: '#64748b' }}>
-                                                <div className="loading-spinner"></div>
-                                                <div style={{ marginTop: '16px' }}>
-                                                    <div style={{ fontSize: '18px', fontWeight: 600, color: '#1e293b' }}>AI가 법률을 검토하고 있습니다...</div>
-                                                    <div style={{ fontSize: '14px', marginTop: '8px' }}>약 30초 정도 소요됩니다 잠시만 기다려주세요</div>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {/* Initial Empty State before OCR */}
-                                        {!structuredData && !analysisResult && !isAnalyzing && (
-                                            <div style={{ textAlign: 'center', padding: '48px', color: 'var(--color-text-secondary)' }}>
-                                                분석 시작 버튼을 클릭하세요
-                                            </div>
-                                        )}
-
-                                        {/* Show More Overlay (Only for Step 3) */}
-                                        {analysisResult && !isExpanded && (
-                                            <div style={{
-                                                position: 'absolute',
-                                                bottom: 0,
-                                                left: 0,
-                                                right: 0,
-                                                height: '150px',
-                                                background: 'linear-gradient(to bottom, rgba(255,255,255,0), white 70%)',
-                                                display: 'flex',
-                                                alignItems: 'flex-end',
-                                                justifyContent: 'center',
-                                                paddingBottom: '20px',
-                                                zIndex: 10
-                                            }}>
-                                                <button
-                                                    onClick={() => setIsExpanded(true)}
-                                                    style={{
-                                                        padding: '10px 24px',
-                                                        background: 'white',
-                                                        border: '1px solid #d9d9d9',
-                                                        borderRadius: '20px',
-                                                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                                                        color: '#0056B3',
-                                                        fontWeight: 600,
-                                                        cursor: 'pointer',
-                                                        fontSize: '14px',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        gap: '6px'
-                                                    }}
-                                                >
-                                                    더보기 ⬇️
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
+                                    {previewUrls.map((url, idx) => (
+                                        <img key={idx} src={url} alt={`문서 ${idx + 1}`} className="document-image" />
+                                    ))}
+                                    {!analysisResult && (
+                                        <button onClick={extractOCR} className="upload-button" style={{ marginTop: '16px', width: '100%' }}>
+                                            분석 시작
+                                        </button>
+                                    )}
                                 </div>
-                            )}
-                        </div>
-                    )}
+
+                                {/* Right Panel: Working Area */}
+                                <div className={`analysis-panel ${(step === 3 && !isExpanded) ? 'scroll-hidden' : 'scroll-visible'}`} style={{
+                                    position: 'relative',
+                                    height: '100%',
+                                    transition: 'max-height 0.3s ease-in-out'
+                                }}>
+                                    <div className="panel-header">
+                                        <div className="panel-title">분석 결과</div>
+                                    </div>
+
+                                    {/* Step 2: Structure Data Confirmation */}
+                                    {structuredData && !analysisResult && (
+                                        <Step2Structure
+                                            structuredData={structuredData}
+                                            setStructuredData={setStructuredData}
+                                            userContext={userContext}
+                                            setUserContext={setUserContext}
+                                            onConfirm={confirmAndAnalyze}
+                                            onReUpload={handleReUpload}
+                                        />
+                                    )}
+
+                                    {/* Step 3: Analysis Results */}
+                                    {analysisResult && (
+                                        <div style={{ paddingBottom: isExpanded ? '0' : '60px' }}>
+                                            <Step3Analysis
+                                                analysisResult={analysisResult}
+                                                userContext={userContext}
+                                                onDownloadPDF={downloadAnalysisPDF}
+                                                onGenerateContract={generateContract}
+                                                onSelectDB={setSelectedDB}
+                                                resultRef={analysisResultRef}
+                                            />
+                                        </div>
+                                    )}
+
+                                    {/* Loading State Placeholder when analyzing */}
+                                    {isAnalyzing && !structuredData && !analysisResult && (
+                                        // Initial OCR loading
+                                        <div style={{ textAlign: 'center', padding: '100px 0', color: '#64748b' }}>
+                                            <div className="loading-spinner"></div>
+                                            <div style={{ marginTop: '16px' }}>분석 대기 중...</div>
+                                        </div>
+                                    )}
+                                    {/* Structure -> Analysis Loading */}
+                                    {isAnalyzing && structuredData && (
+                                        <div style={{ textAlign: 'center', padding: '100px 0', color: '#64748b' }}>
+                                            <div className="loading-spinner"></div>
+                                            <div style={{ marginTop: '16px' }}>
+                                                <div style={{ fontSize: '18px', fontWeight: 600, color: '#1e293b' }}>AI가 법률을 검토하고 있습니다...</div>
+                                                <div style={{ fontSize: '14px', marginTop: '8px' }}>약 30초 정도 소요됩니다 잠시만 기다려주세요</div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Initial Empty State before OCR */}
+                                    {!structuredData && !analysisResult && !isAnalyzing && (
+                                        <div style={{ textAlign: 'center', padding: '48px', color: 'var(--color-text-secondary)' }}>
+                                            분석 시작 버튼을 클릭하세요
+                                        </div>
+                                    )}
+
+                                    {/* Show More Overlay (Only for Step 3) */}
+                                    {analysisResult && !isExpanded && (
+                                        <div style={{
+                                            position: 'absolute',
+                                            bottom: 0,
+                                            left: 0,
+                                            right: 0,
+                                            height: '150px',
+                                            background: 'linear-gradient(to bottom, rgba(255,255,255,0), white 70%)',
+                                            display: 'flex',
+                                            alignItems: 'flex-end',
+                                            justifyContent: 'center',
+                                            paddingBottom: '20px',
+                                            zIndex: 10
+                                        }}>
+                                            <button
+                                                onClick={() => setIsExpanded(true)}
+                                                style={{
+                                                    padding: '10px 24px',
+                                                    background: 'white',
+                                                    border: '1px solid #d9d9d9',
+                                                    borderRadius: '20px',
+                                                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                                                    color: '#0056B3',
+                                                    fontWeight: 600,
+                                                    cursor: 'pointer',
+                                                    fontSize: '14px',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '6px'
+                                                }}
+                                            >
+                                                더보기 ⬇️
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {/* Modals & Overlays */}
