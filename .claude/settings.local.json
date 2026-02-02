@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev:*)",
+      "Bash(timeout:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(cmd /c \"taskkill /PID 39972 /F\")",
+      "Bash(tree:*)",
+      "Bash(git -C \"c:\\\\Users\\\\Jini\\\\Desktop\\\\김지은\\\\01_개발\\\\test\" log --oneline -10)"
+    ]
+  }
+}
