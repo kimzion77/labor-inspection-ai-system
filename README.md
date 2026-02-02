@@ -24,7 +24,7 @@
 
 - **Frontend**: React, Vite, Framer Motion
 - **Backend**: Node.js, Express
-- **AI**: OpenAI GPT-4o
+- **AI**: OpenAI GPT-5.2
 - **Utils**: SheetJS (Excel), html2canvas, jsPDF
 
 ## 📦 설치 및 실행 방법
