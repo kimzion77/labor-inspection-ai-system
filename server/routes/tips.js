@@ -1,8 +1,5 @@
 import { Router } from 'express';
-import { readdir, readFile } from 'fs/promises';
-import { join } from 'path';
-import XLSX from 'xlsx';
-import { laborLawTips } from '../data/laborLawTips.js';
+import { fallbackTips } from '../data/fallbackTips.js';
 
 const router = Router();
 
@@ -10,7 +7,7 @@ const router = Router();
 const recentTips = [];
 const MAX_RECENT_TIPS = 10;
 
-console.log(`[TIPS] laborLawTips 배열 로드 완료: ${laborLawTips.length}개 팁`);
+console.log(`[TIPS] fallbackTips 배열 로드 완료: ${fallbackTips.length}개 팁`);
 
 // 팁 생성 라우트
 router.get('/random', async (req, res) => {
@@ -18,26 +15,24 @@ router.get('/random', async (req, res) => {
     res.set('Cache-Control', 'no-store');
 
     try {
-        console.log(`[TIPS] 현재 recentTips 길이: ${recentTips.length}, 내용:`, recentTips.map(t => t.substring(0, 20)));
+        console.log(`[TIPS] 현재 recentTips 길이: ${recentTips.length}`);
 
         let selectedTip;
-        let attempts = 0;
-        const maxAttempts = 50;
 
         // 사용 가능한 팁 풀 생성 (최근 사용된 팁 제외)
-        const availableTips = laborLawTips.filter(tip => !recentTips.includes(tip));
-        console.log(`[TIPS] 사용 가능한 팁: ${availableTips.length}/${laborLawTips.length}`);
+        const availableTips = fallbackTips.filter(tip => !recentTips.includes(tip));
+        console.log(`[TIPS] 사용 가능한 팁: ${availableTips.length}/${fallbackTips.length}`);
 
         // 모든 팁을 다 사용했다면 recentTips 초기화
         if (availableTips.length === 0) {
             console.log(`[TIPS] 모든 팁 사용됨, recentTips 초기화`);
             recentTips.length = 0;
-            selectedTip = laborLawTips[Math.floor(Math.random() * laborLawTips.length)];
+            selectedTip = fallbackTips[Math.floor(Math.random() * fallbackTips.length)];
         } else {
             // 사용 가능한 팁 중에서 랜덤 선택
             const randomIndex = Math.floor(Math.random() * availableTips.length);
             selectedTip = availableTips[randomIndex];
-            console.log(`[TIPS] 랜덤 인덱스: ${randomIndex}, 선택된 팁: ${selectedTip.substring(0, 30)}...`);
+            console.log(`[TIPS] 선택된 팁: ${selectedTip.substring(0, 30)}...`);
         }
 
         // 최근 사용된 팁 목록에 추가
@@ -57,8 +52,9 @@ router.get('/random', async (req, res) => {
         res.json({ tip });
     } catch (error) {
         console.error('[TIPS] 팁 생성 실패:', error);
-        res.json({ tip: "💡 2026년 최저임금은 시간급 10,320원이에요." });
+        res.json({ tip: "💡 근로계약서는 근로 시작 전에 반드시 서면으로 작성하고, 사업주와 근로자가 각각 1부씩 보관해야 합니다." });
     }
 });
 
 export default router;
+

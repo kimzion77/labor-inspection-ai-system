@@ -73,7 +73,7 @@ export async function structureText(extractedText) {
       { role: 'system', content: config.systemPrompt || '텍스트를 JSON으로 구조화하세요.' },
       { role: 'user', content: `다음 OCR 텍스트를 위 양식에 맞춰 구조화해주세요:\n\n${extractedText}` }
     ],
-    max_completion_tokens: 3000,
+    max_completion_tokens: 3000,  // 원래 값으로 복원
     temperature: config.temperature ?? 0
   });
 
@@ -89,7 +89,7 @@ export async function classifyIntent(structuredData) {
 
   try {
     const completion = await openaiInstance.chat.completions.create({
-      model: config.model || 'gpt-5.2',
+      model: 'gpt-4o-mini',  // 의도 분류는 경량 모델로 충분
       messages: [
         { role: 'system', content: config.systemPrompt || '의도를 분류하세요.' },
         { role: 'user', content: JSON.stringify(structuredData, null, 2) }
@@ -139,7 +139,7 @@ ${JSON.stringify(structuredData, null, 2)}
       }
     ],
     response_format: { type: 'json_object' },
-    max_completion_tokens: 8000,
+    max_completion_tokens: 8000,  // 원래 값으로 복원
     temperature: 0
   });
 

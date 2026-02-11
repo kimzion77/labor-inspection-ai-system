@@ -1,0 +1,161 @@
+[
+  {
+    "name": "근로계약",
+    "topics": [
+      {
+        "key": "workerStatus",
+        "label": "근로자성"
+      },
+      {
+        "key": "continuousService",
+        "label": "계속근로기간"
+      },
+      {
+        "key": "regularEmployeeCount",
+        "label": "상시근로자수"
+      },
+      {
+        "key": "dailyWorker",
+        "label": "일용직"
+      }
+    ]
+  },
+  {
+    "name": "임금",
+    "topics": [
+      {
+        "key": "wages",
+        "label": "임금"
+      },
+      {
+        "key": "minimumWage",
+        "label": "최저임금"
+      },
+      {
+        "key": "ordinaryWage",
+        "label": "통상임금"
+      },
+      {
+        "key": "averageWage",
+        "label": "평균임금"
+      },
+      {
+        "key": "comprehensiveWageSystem",
+        "label": "포괄임금제"
+      },
+      {
+        "key": "wageLedger",
+        "label": "wageLedger"
+      },
+      {
+        "key": "wageArrears",
+        "label": "wageArrears"
+      },
+      {
+        "key": "wageGuarantee",
+        "label": "대지급금"
+      }
+    ]
+  },
+  {
+    "name": "수당",
+    "topics": [
+      {
+        "key": "overtimeAllowance",
+        "label": "가산수당"
+      },
+      {
+        "key": "weeklyHolidayAllowance",
+        "label": "주휴수당"
+      },
+      {
+        "key": "annualLeaveAllowance",
+        "label": "연차수당"
+      },
+      {
+        "key": "nonStatutoryAllowance",
+        "label": "법정외수당"
+      },
+      {
+        "key": "dismissalNoticeAllowance",
+        "label": "해고예고수당"
+      },
+      {
+        "key": "shutdownAllowance",
+        "label": "휴업수당"
+      }
+    ]
+  },
+  {
+    "name": "근로시간",
+    "topics": [
+      {
+        "key": "workingHours",
+        "label": "근로시간"
+      },
+      {
+        "key": "flexibleWorkSystem",
+        "label": "탄력근로제"
+      },
+      {
+        "key": "selectiveWorkSystem",
+        "label": "선택근로제"
+      },
+      {
+        "key": "deemedWorkSystem",
+        "label": "간주근로제"
+      },
+      {
+        "key": "discretionaryWorkSystem",
+        "label": "재량근로제"
+      },
+      {
+        "key": "shiftWork",
+        "label": "교대제"
+      },
+      {
+        "key": "surveillanceWork",
+        "label": "감시단속적근로"
+      }
+    ]
+  },
+  {
+    "name": "휴가/휴일",
+    "topics": [
+      {
+        "key": "annualPaidLeave",
+        "label": "연차유급휴가"
+      },
+      {
+        "key": "annualLeavePromotion",
+        "label": "연차촉진"
+      },
+      {
+        "key": "compensatoryLeave",
+        "label": "보상휴가"
+      },
+      {
+        "key": "holidayAndSubstitute",
+        "label": "휴일/휴일대체"
+      }
+    ]
+  },
+  {
+    "name": "퇴직",
+    "topics": [
+      {
+        "key": "severancePay",
+        "label": "퇴직금"
+      }
+    ]
+  },
+  {
+    "name": "고용보험",
+    "topics": [
+      {
+        "key": "unemploymentBenefits",
+        "label": "실업급여"
+      }
+    ]
+  }
+]

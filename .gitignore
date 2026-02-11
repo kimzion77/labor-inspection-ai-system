@@ -1,39 +1,50 @@
+nul  
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+
+# Production
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
 # Logs
-logs
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
+*.log
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
+.vscode/
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+.DS_Store
 
-# Environment Variables
-.env
-.env.local
+# Backup files
+*_backup_*
 
-# Backups and Data
-src/old_backups/
-server/data/excel/
-server/data/csv/
-resources/images/
-*.xlsx
-*.csv
+# Temporary files
+*.tmp
+*.temp
+.cache/
 
-server/.env
-nul
+# OS files
+Thumbs.db
+nul  
+backup_20260123_144124/  
+src/old_backups/ 

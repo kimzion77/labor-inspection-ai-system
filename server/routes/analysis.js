@@ -32,17 +32,17 @@ router.post('/analyze', asyncHandler(async (req, res) => {
   const detailedLegalGuidelines = guidelinesResult.text;
   const dbReferences = guidelinesResult.structured;
 
-  // STEP 1: 의도 분류
-  const categories = await classifyIntent(structuredData);
+  // STEP 1 & 2: 의도 분류와 노동법 분석을 병렬로 실행 (속도 최적화)
+  const [categories, analysisResult] = await Promise.all([
+    classifyIntent(structuredData),
+    performLegalAnalysis(
+      structuredData,
+      { businessSize, workerTypes },
+      detailedLegalGuidelines
+    )
+  ]);
+
   console.log('📋 분류된 카테고리:', categories);
-
-  // STEP 2: 노동법 분석
-  let analysisResult = await performLegalAnalysis(
-    structuredData,
-    { businessSize, workerTypes },
-    detailedLegalGuidelines
-  );
-
   console.log('📄 원본 응답 길이:', JSON.stringify(analysisResult).length);
 
   // STEP 3: 분석 요약 통계 추가

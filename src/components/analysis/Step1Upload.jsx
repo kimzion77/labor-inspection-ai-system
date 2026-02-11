@@ -50,17 +50,15 @@ const Step1Upload = ({ onFileChange }) => {
                 id="file-input"
             />
 
-            {/* 모바일용 카메라 촬영 input */}
-            {isMobile && (
-                <input
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                    onChange={onFileChange}
-                    style={{ display: 'none' }}
-                    id="camera-input"
-                />
-            )}
+            {/* 카메라 촬영 input (모바일 호환) */}
+            <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={onFileChange}
+                style={{ display: 'none' }}
+                id="camera-input"
+            />
 
             <div style={{
                 display: 'flex',
@@ -83,23 +81,21 @@ const Step1Upload = ({ onFileChange }) => {
                     파일 선택
                 </label>
 
-                {/* 모바일에서만 카메라 버튼 표시 */}
-                {isMobile && (
-                    <label
-                        htmlFor="camera-input"
-                        className="upload-button"
-                        style={{
-                            fontSize: '15px',
-                            padding: '12px 24px',
-                            width: '100%',
-                            background: '#28a745',
-                            borderColor: '#28a745'
-                        }}
-                    >
-                        <Camera size={18} style={{ marginRight: '8px' }} />
-                        카메라로 촬영
-                    </label>
-                )}
+                {/* 카메라 버튼 */}
+                <label
+                    htmlFor="camera-input"
+                    className="upload-button"
+                    style={{
+                        fontSize: isMobile ? '15px' : '16px',
+                        padding: isMobile ? '12px 24px' : '14px 32px',
+                        width: isMobile ? '100%' : 'auto',
+                        background: '#28a745',
+                        borderColor: '#28a745'
+                    }}
+                >
+                    <Camera size={18} style={{ marginRight: '8px' }} />
+                    카메라로 촬영
+                </label>
             </div>
         </div>
     );

@@ -3,6 +3,7 @@ import { join } from 'path';
 import XLSX from 'xlsx';
 
 let xlsxFileMap = new Map();
+let xlsxDataCache = new Map();
 let contractItems = [];
 let serverDir = '';
 let rootDir = '';
@@ -20,12 +21,13 @@ export function initDataService(serverDirectory) {
  */
 export async function buildXlsxIndex() {
   try {
-    const files = await readdir(rootDir);
+    const excelDir = join(serverDir, 'data/excel');
+    const files = await readdir(excelDir);
     const xlsxFiles = files.filter(f => f.endsWith('.xlsx'));
 
     xlsxFiles.forEach(file => {
       const category = file.split('_')[0];
-      xlsxFileMap.set(category, join(rootDir, file));
+      xlsxFileMap.set(category, join(excelDir, file));
     });
 
     // 별칭 설정
@@ -33,7 +35,20 @@ export async function buildXlsxIndex() {
     xlsxFileMap.set('임금명세서', xlsxFileMap.get('임금대장-임금명세서'));
     xlsxFileMap.set('휴일대체', xlsxFileMap.get('휴일'));
 
-    console.log(`✅ XLSX 인덱싱 완료: ${xlsxFileMap.size}개 카테고리`);
+    // XLSX 데이터를 메모리에 미리 캐시 (매 요청마다 디스크 읽기 방지)
+    for (const [category, filePath] of xlsxFileMap.entries()) {
+      if (filePath && !xlsxDataCache.has(filePath)) {
+        try {
+          const workbook = XLSX.readFile(filePath);
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          xlsxDataCache.set(filePath, XLSX.utils.sheet_to_json(firstSheet));
+        } catch (e) {
+          console.warn(`⚠️ XLSX 캐시 실패 (${category}):`, e.message);
+        }
+      }
+    }
+
+    console.log(`✅ XLSX 인덱싱 및 캐시 완료: ${xlsxFileMap.size}개 카테고리, ${xlsxDataCache.size}개 파일 캐시`);
   } catch (error) {
     console.error('❌ XLSX 인덱싱 실패:', error);
   }
@@ -44,7 +59,7 @@ export async function buildXlsxIndex() {
  */
 export async function loadContractItems() {
   try {
-    const csvPath = join(serverDir, '근로계약서_updated.csv');
+    const csvPath = join(serverDir, 'data/csv/근로계약서_updated.csv');
     const data = await readFile(csvPath, 'utf-8');
     const lines = data.split('\n').filter(line => line.trim());
     const headers = lines[0].split(',');
@@ -109,9 +124,9 @@ export async function getDetailedLegalContent(topics) {
     const filePath = xlsxFileMap.get(category);
     if (filePath) {
       try {
-        const workbook = XLSX.readFile(filePath);
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const data = XLSX.utils.sheet_to_json(firstSheet);
+        // 캐시된 데이터 사용 (디스크 읽기 없음)
+        const data = xlsxDataCache.get(filePath);
+        if (!data) continue;
 
         const match = data.find(row =>
           Object.values(row).some(v => typeof v === 'string' && v.includes(topicId))
@@ -130,7 +145,7 @@ export async function getDetailedLegalContent(topics) {
           foundAny = true;
         }
       } catch (error) {
-        console.error(`❌ XLSX 읽기 실패 (${category}):`, error.message);
+        console.error(`❌ XLSX 조회 실패 (${category}):`, error.message);
       }
     }
   }
@@ -146,12 +161,18 @@ export async function getDetailedLegalContent(topics) {
  * 데이터베이스 파일 목록 조회
  */
 export async function listDatabaseFiles() {
-  const rootFiles = await readdir(rootDir);
-  const serverFiles = await readdir(serverDir);
+  const excelDir = join(serverDir, 'data/excel');
+  const csvDir = join(serverDir, 'data/csv');
+
+  let excelFiles = [];
+  let csvFiles = [];
+
+  try { excelFiles = await readdir(excelDir); } catch { }
+  try { csvFiles = await readdir(csvDir); } catch { }
 
   return [
-    ...rootFiles.filter(f => f.endsWith('.xlsx')).map(f => ({ name: f, type: 'xlsx', location: 'root' })),
-    ...serverFiles.filter(f => f.endsWith('.csv')).map(f => ({ name: f, type: 'csv', location: 'server' }))
+    ...excelFiles.filter(f => f.endsWith('.xlsx')).map(f => ({ name: f, type: 'xlsx', location: 'excel' })),
+    ...csvFiles.filter(f => f.endsWith('.csv')).map(f => ({ name: f, type: 'csv', location: 'csv' }))
   ];
 }
 
